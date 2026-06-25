@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palaparthi Samyelu — Electrical Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1320;
+    --panel:#101D31;
+    --line:#1E2E47;
+    --text:#EDEAE1;
+    --muted:#8C9AB5;
+    --amber:#E8A33D;
+    --teal:#4FD1C5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+
+  /* trace line that runs down the page connecting sections */
+  .trace{
+    position:absolute;
+    left:50%;
+    top:0;
+    width:2px;
+    height:100%;
+    background:linear-gradient(to bottom, transparent, var(--line) 5%, var(--line) 95%, transparent);
+    z-index:0;
+    transform:translateX(-50%);
+  }
+  .node{
+    position:absolute;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:10px;height:10px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--amber);
+    z-index:1;
+    box-shadow:0 0 12px rgba(232,163,61,.5);
+  }
+
+  nav{
+    position:fixed;top:0;left:0;right:0;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 6%;
+    z-index:10;
+    backdrop-filter:blur(8px);
+    background:rgba(11,19,32,.7);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{font-weight:700;font-size:1.1rem;letter-spacing:.02em;}
+  .logo span{color:var(--amber);}
+  nav ul{display:flex;gap:32px;list-style:none;}
+  nav ul li a{font-size:.85rem;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.03em;transition:color .2s;}
+  nav ul li a:hover{color:var(--amber);}
+
+  section{
+    position:relative;
+    max-width:880px;
+    margin:0 auto;
+    padding:160px 24px 100px;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:0;
+    text-align:left;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:.85rem;
+    letter-spacing:.12em;
+    margin-bottom:18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:24px;height:1px;background:var(--teal);
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.05;
+    font-weight:700;
+    margin-bottom:22px;
+  }
+  .hero h1 .amber{color:var(--amber);}
+  .hero p.lead{
+    color:var(--muted);
+    font-size:1.15rem;
+    max-width:560px;
+    line-height:1.6;
+    margin-bottom:36px;
+  }
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap;}
+  .btn{
+    padding:13px 26px;
+    border-radius:2px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.85rem;
+    letter-spacing:.03em;
+    border:1px solid var(--amber);
+    color:var(--amber);
+    transition:all .25s;
+  }
+  .btn.fill{background:var(--amber);color:#0B1320;font-weight:500;}
+  .btn:hover{background:var(--amber);color:#0B1320;}
+  .btn.fill:hover{background:transparent;color:var(--amber);}
+
+  .scope{
+    margin-top:56px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:4px;
+    padding:18px 20px;
+    max-width:560px;
+  }
+  .scope-row{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);margin-bottom:10px;}
+  .scope svg{width:100%;height:60px;display:block;}
+
+  /* SECTION HEADERS */
+  .sec-label{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--amber);
+    font-size:.8rem;
+    letter-spacing:.15em;
+    margin-bottom:10px;
+  }
+  .sec-title{
+    font-size:clamp(1.6rem,3vw,2.2rem);
+    font-weight:600;
+    margin-bottom:48px;
+  }
+
+  /* ABOUT */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:48px;
+    align-items:start;
+  }
+  .about-text p{color:var(--muted);line-height:1.75;margin-bottom:16px;font-size:1rem;}
+  .spec-list{
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--panel);
+  }
+  .spec-row{
+    display:flex;justify-content:space-between;
+    padding:14px 18px;
+    border-bottom:1px solid var(--line);
+    font-size:.85rem;
+  }
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row span:first-child{color:var(--muted);font-family:'JetBrains Mono',monospace;}
+  .spec-row span:last-child{font-weight:500;}
+
+  /* SKILLS */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .skill-cell{
+    background:var(--panel);
+    padding:22px 20px;
+  }
+  .skill-cell .pct{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:.75rem;
+    margin-bottom:8px;
+  }
+  .skill-cell h4{font-size:.95rem;font-weight:600;margin-bottom:10px;}
+  .bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--amber);border-radius:2px;}
+
+  /* PROJECTS */
+  .project{
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--panel);
+    padding:28px 28px 24px;
+    margin-bottom:22px;
+    position:relative;
+  }
+  .project-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:16px;}
+  .project h3{font-size:1.25rem;font-weight:600;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.7rem;
+    color:var(--teal);
+    border:1px solid var(--teal);
+    border-radius:20px;
+    padding:4px 12px;
+    white-space:nowrap;
+  }
+  .project p{color:var(--muted);line-height:1.65;margin-bottom:16px;font-size:.95rem;}
+  .project-meta{display:flex;gap:24px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted);flex-wrap:wrap;}
+  .project-meta b{color:var(--text);font-weight:500;}
+
+  /* EXPERIENCE */
+  .job{
+    display:grid;
+    grid-template-columns:160px 1fr;
+    gap:24px;
+    padding:24px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .job:last-child{border-bottom:none;}
+  .job .period{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:.82rem;}
+  .job h4{font-size:1.05rem;font-weight:600;margin-bottom:4px;}
+  .job .role{color:var(--teal);font-size:.85rem;margin-bottom:10px;font-family:'JetBrains Mono',monospace;}
+  .job p{color:var(--muted);font-size:.92rem;line-height:1.6;}
+
+  /* CONTACT */
+  .contact{
+    text-align:center;
+    padding-bottom:140px;
+  }
+  .contact h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:18px;}
+  .contact p{color:var(--muted);margin-bottom:32px;font-size:1.05rem;}
+  .contact-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
+
+  footer{
+    text-align:center;
+    padding:28px;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    font-size:.78rem;
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width:720px){
+    .about-grid{grid-template-columns:1fr;}
+    .skills-grid{grid-template-columns:1fr 1fr;}
+    .job{grid-template-columns:1fr;}
+    nav ul{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+  :focus-visible{outline:2px solid var(--teal);outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">PS<span>.</span>EE</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="trace"></div>
+
+<section class="hero" id="top">
+  <div class="eyebrow mono">SIGNAL CHAIN: IDEA → SCHEMATIC → SILICON</div>
+  <h1>Palaparthi Samyelu<br>builds the <span class="amber">circuits</span><br>behind the machines.</h1>
+  <p class="lead">Electrical engineering graduate with a foundation in electrical machines, power systems, and circuit analysis — now exploring how deep learning can make renewable energy smarter and more efficient.</p>
+  <div class="hero-cta">
+    <a class="btn fill" href="#projects">View Projects</a>
+    <a class="btn" href="#contact">Get In Touch</a>
+  </div>
+
+  <div class="scope">
+    <div class="scope-row"><span>CH1 · 5V/DIV</span><span>1ms/DIV</span><span>TRIG: AUTO</span></div>
+    <svg viewBox="0 0 500 60" preserveAspectRatio="none">
+      <polyline points="0,30 40,30 50,10 60,50 70,30 140,30 150,8 155,52 160,30 230,30 235,12 245,48 250,30 320,30 325,10 335,50 340,30 410,30 415,12 425,48 430,30 500,30"
+        fill="none" stroke="#4FD1C5" stroke-width="2"/>
+    </svg>
+  </div>
+</section>
+
+<section id="about">
+  <div class="node" style="top:0;"></div>
+  <div class="sec-label mono">// 01 — ABOUT</div>
+  <h2 class="sec-title">Engineering with both<br>simulation and solder.</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a B.Tech graduate in Electrical Engineering with a solid grounding in electrical machines, power systems, and circuit theory. I enjoy understanding how power moves through a system — from generation to the final load — and how it can be made more efficient.</p>
+      <p>My final-year project combined that core electrical foundation with deep learning: using LSTM networks to study and improve the economical operation of solar energy systems. I'm now looking to build on this at the intersection of power systems and applied machine learning.</p>
+    </div>
+    <div class="spec-list">
+      <div class="spec-row"><span>LOCATION</span><span>Dronadula, IN</span></div>
+      <div class="spec-row"><span>FOCUS</span><span>Power Systems & ML</span></div>
+      <div class="spec-row"><span>STATUS</span><span>B.Tech Graduate</span></div>
+      <div class="spec-row"><span>EDUCATION</span><span>B.Tech, Electrical Eng.</span></div>
+      <div class="spec-row"><span>AVAILABILITY</span><span>Open to opportunities</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="node" style="top:0;"></div>
+  <div class="sec-label mono">// 02 — SKILLS</div>
+  <h2 class="sec-title">Tools of the trade.</h2>
+  <div class="skills-grid">
+    <div class="skill-cell"><div class="pct mono">CORE</div><h4>Electrical Circuits</h4><div class="bar"><i style="width:80%"></i></div></div>
+    <div class="skill-cell"><div class="pct mono">CORE</div><h4>Electrical Machines</h4><div class="bar"><i style="width:78%"></i></div></div>
+    <div class="skill-cell"><div class="pct mono">CORE</div><h4>Power Systems</h4><div class="bar"><i style="width:78%"></i></div></div>
+    <div class="skill-cell"><div class="pct mono">APPLIED</div><h4>Deep Learning (LSTM)</h4><div class="bar"><i style="width:65%"></i></div></div>
+    <div class="skill-cell"><div class="pct mono">APPLIED</div><h4>Renewable Energy Systems</h4><div class="bar"><i style="width:68%"></i></div></div>
+    <div class="skill-cell"><div class="pct mono">GROWING</div><h4>Python for Engineering</h4><div class="bar"><i style="width:60%"></i></div></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="node" style="top:0;"></div>
+  <div class="sec-label mono">// 03 — PROJECTS</div>
+  <h2 class="sec-title">Selected work.</h2>
+
+  <div class="project">
+    <div class="project-top">
+      <h3>Economical Operation of Solar Energy using LSTM</h3>
+      <span class="tag">DEEP LEARNING + POWER SYSTEMS</span>
+    </div>
+    <p>Final-year project applying LSTM (Long Short-Term Memory) deep learning models to study and improve the economical operation of solar energy systems — forecasting generation patterns to support better, lower-cost dispatch decisions.</p>
+    <div class="project-meta"><span><b>Domain:</b> Solar Energy</span><span><b>Model:</b> LSTM</span><span><b>Focus:</b> Economic Dispatch</span></div>
+  </div>
+
+  <div class="project">
+    <div class="project-top">
+      <h3>Power Systems Fundamentals</h3>
+      <span class="tag">COURSEWORK</span>
+    </div>
+    <p>Studied generation, transmission, and distribution of electrical power, along with load flow and fault analysis as part of core B.Tech coursework.</p>
+    <div class="project-meta"><span><b>Topics:</b> Load Flow, Fault Analysis</span></div>
+  </div>
+
+  <div class="project">
+    <div class="project-top">
+      <h3>Electrical Machines Lab</h3>
+      <span class="tag">COURSEWORK</span>
+    </div>
+    <p>Hands-on study of DC and AC machines, transformers, and motor characteristics through lab experiments and performance testing.</p>
+    <div class="project-meta"><span><b>Topics:</b> Transformers, Motors, AC/DC Machines</span></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="node" style="top:0;"></div>
+  <div class="sec-label mono">// 04 — EDUCATION</div>
+  <h2 class="sec-title">My academic path.</h2>
+
+  <div class="job">
+    <div class="period mono">B.Tech</div>
+    <div>
+      <h4>Electrical Engineering</h4>
+      <div class="role">Bachelor of Technology</div>
+      <p>Built a strong foundation in electrical circuits, electrical machines, and power systems, and completed a final-year project applying LSTM deep learning to the economical operation of solar energy systems.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="node" style="top:0;"></div>
+  <div class="sec-label mono" style="justify-content:center;display:flex;">// 05 — CONTACT</div>
+  <h2>Let's build something<br>that actually works.</h2>
+  <p>Open to freelance projects, consulting, and full-time roles.</p>
+  <div class="contact-links">
+    <a class="btn fill" href="mailto:palaparthisam@gmail.com">palaparthisam@gmail.com</a>
+    <a class="btn" href="https://www.linkedin.com/in/palaparthi-samyelu-9b9bb1414" target="_blank">LinkedIn</a>
+  </div>
+</section>
+
+<footer>© 2026 PALAPARTHI SAMYELU — DRONADULA, INDIA</footer>
+
+</body>
+</html>
